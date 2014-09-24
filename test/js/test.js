@@ -17,14 +17,19 @@
       var upload = function (f){
         var a = new FileSlicer({'socket' : client, 'file' : f});
 
-        a.send(function(file) {
-          var head = a.pad(a.slices, 18)+a.pad(file.size, 12)+file.name;
-          console.log(head);
-          return head;
-        }, function(part) {
+        var head = function(file) {
+          var h = a.pad(a.slices, 18)+a.pad(file.size, 12)+file.name;
+          console.log(h);
+          return h;
+        };
+
+        var part = function(part) {
           console.log(part);
           return part;
-        });                  
+        };
+
+        a.send(head, part);
+        
       };
 
       for (var i = 0, file; file = files[i]; i++){
