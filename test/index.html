@@ -21,7 +21,8 @@
               var files = e.originalEvent.dataTransfer.files;
 
               var upload = function (f){
-                  console.debug(f.name);
+
+                  console.debug(f.name, f.size);
 
                   var a = new FileSlicer({'socket' : client, 'file' : f});
 
@@ -29,12 +30,10 @@
                     return a.pad(a.slices, 18)+a.pad(file.size, 12)+file.name;
                   }, function(part) {
                     return part;
-                  });
-                  
+                  });                  
               };
 
-              for (var i = 0, file; file = files[i]; i++)
-              {
+              for (var i = 0, file; file = files[i]; i++){
                   $('<div align="center"></div>').append($('<a></a>').text(file.name).prop('href', '/' + file.name)).appendTo('body');
                   upload(file);
               }

@@ -28,10 +28,10 @@ var FileSlicer = (function (config) {
 	        return self.file.slice(start, end);
 	    };
 
-	    self.socket.send(handHead(self.file)); // see below
+	    self.socket.send(handHead(self.file));
 
 	    for(var i = 0; i < self.slices; ++i) {
-            self.socket.send(handFilePart(getNextSlice())); // see below
+            self.socket.send(handFilePart(getNextSlice()));
         }
 	};
 
@@ -39,33 +39,4 @@ var FileSlicer = (function (config) {
 	    var s = "000000000000000000000000000000" + num;
 	    return s.substr(s.length-size);	
 	};
-
 });
-
-
-
-
-//TEST
-
-/*
-
-var socket = new WebSocket('ws://localhost:3009');
-
-socket.onopen = function(){
-	console.log('omnpen')
-};
-
-var a = new FileSlicer({
-	'socket' : socket
-});
-a.setFile('testeAAA');
-
-
-var b = new FileSlicer({
-	'socket' : socket
-});
-b.setFile('testeBBB');
-
-*/
-
-
