@@ -1,0 +1,59 @@
+<html>
+<head>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+  <script type="text/javascript" src="../FileSlicer.js"></script>
+
+  <script>
+      var client = new WebSocket('ws://localhost:8083');
+
+      // Wait for connection to BinaryJS server
+      client.onopen = function (event)
+      {
+          var box = $('#box');
+          box.on('dragenter', doNothing);
+          box.on('dragover', doNothing);
+          box.text('Drag files here');
+
+          box.on('drop', function (e)
+          {
+              e.originalEvent.preventDefault();
+
+              var files = e.originalEvent.dataTransfer.files;
+
+              var upload = function (f){
+                  console.debug(f.name);
+
+                  var a = new FileSlicer({'socket' : client, 'file' : f});
+
+                  a.send(function(file) {
+                    return a.pad(a.slices, 18)+a.pad(file.size, 12)+file.name;
+                  }, function(part) {
+                    return part;
+                  });
+                  
+              };
+
+              for (var i = 0, file; file = files[i]; i++)
+              {
+                  $('<div align="center"></div>').append($('<a></a>').text(file.name).prop('href', '/' + file.name)).appendTo('body');
+                  upload(file);
+              }
+          });
+      };
+
+      // Deal with DOM quirks
+
+      function doNothing(e)
+      {
+          e.preventDefault();
+          e.stopPropagation();
+      }
+ </script>
+</head>
+<body>
+<div id="progress" align="center">0% complete</div>
+<div id="box" style="background: #eee; font-size: 26px; width: 400px; height: 300px;line-height: 300px; margin: 0 auto; text-align: center;">
+  Connecting...
+</div>
+</body>
+</html>
